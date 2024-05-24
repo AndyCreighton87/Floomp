@@ -37,8 +37,8 @@ public class CameraController : MonoBehaviour
 
     }
 
-    private void PanHorizontal(float value) {
-        panDirection.x = value * panSpeed * Time.deltaTime;
+    private void PanHorizontal(float _value) {
+        panDirection.x = _value * panSpeed * Time.deltaTime;
     }
 
     private void PanHorizontalEnded() {
@@ -46,16 +46,16 @@ public class CameraController : MonoBehaviour
     }
 
 
-    private void PanVertical(float value) {
-        panDirection.z = value * panSpeed * Time.deltaTime;
+    private void PanVertical(float _value) {
+        panDirection.z = _value * panSpeed * Time.deltaTime;
     }
 
     private void PanVerticalEnded() {
         panDirection.z = 0;
     }
 
-    private void Zoom(float value) {
-        scrollAmount = value * scrollSpeed * Time.deltaTime;
+    private void Zoom(float _value) {
+        scrollAmount = _value * scrollSpeed * Time.deltaTime;
         Debug.Log("Zoom triggered");
     }
 
