@@ -1876,6 +1876,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 317786870}
+  speed: 15
+  turnDistance: 10
+  turnSpeed: 5
 --- !u!1 &1298111015
 GameObject:
   m_ObjectHideFlags: 0
@@ -2324,7 +2327,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d55ed21cd35fef4ea4475a563fc5077, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayGridGizmos: 1
+  displayGridGizmos: 0
   unwalkableMask:
     serializedVersion: 2
     m_Bits: 64
@@ -2337,6 +2340,7 @@ MonoBehaviour:
       serializedVersion: 2
       m_Bits: 256
     terrainPenalty: 10
+  obstacleProximityPenalty: 10
   gridWorldSize: {x: 200, y: 200}
   nodeRadius: 1
 --- !u!4 &1853202071
