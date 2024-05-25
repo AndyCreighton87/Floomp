@@ -2324,7 +2324,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d55ed21cd35fef4ea4475a563fc5077, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayGridGizmos: 0
+  displayGridGizmos: 1
   unwalkableMask:
     serializedVersion: 2
     m_Bits: 64
@@ -2336,9 +2336,9 @@ MonoBehaviour:
   - terrainMask:
       serializedVersion: 2
       m_Bits: 256
-    terrainPenalty: 4
+    terrainPenalty: 10
   gridWorldSize: {x: 200, y: 200}
-  nodeRadius: 2
+  nodeRadius: 1
 --- !u!4 &1853202071
 Transform:
   m_ObjectHideFlags: 0
