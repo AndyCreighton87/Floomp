@@ -8,25 +8,14 @@ public class Pathfinding : MonoBehaviour
     public readonly int straightCost = 10;
     public readonly int diagonalCost = 14;
 
-    PathRequestManager pathRequestManager;
-
-
-    private void Awake() {
-        pathRequestManager = GetComponent<PathRequestManager>();
-    }
-
-    public void StartFindPath(Vector3 _startPos, Vector3 _endPos) {
-        StartCoroutine(FindPath(_startPos, _endPos));
-    }
-
-    IEnumerator FindPath(Vector3 _startPos, Vector3 _targetPos) {
+    public void FindPath(PathRequest _request, Action<PathResult> _callback) {
         GridManager gridManager = GridManager.Instance;
 
         Vector3[] waypoints = new Vector3[0];
         bool pathSuccess = false;
 
-        Node startNode = gridManager.NodeFromWorldPosition(_startPos);
-        Node targetNode = gridManager.NodeFromWorldPosition(_targetPos);
+        Node startNode = gridManager.NodeFromWorldPosition(_request.pathStart);
+        Node targetNode = gridManager.NodeFromWorldPosition(_request.pathEnd);
 
         if (startNode.walkable && targetNode.walkable) {
 
@@ -67,13 +56,12 @@ public class Pathfinding : MonoBehaviour
             }
         }
 
-        yield return null;
-
         if (pathSuccess) {
             waypoints = RetracePath(startNode, targetNode);
+            pathSuccess = waypoints.Length > 0;
         }
 
-        pathRequestManager.FinishedProcessingPath(waypoints, pathSuccess);
+        _callback(new PathResult(waypoints, pathSuccess, _request.callback));
     }
 
     private Vector3[] RetracePath(Node _startNode, Node _endNode) {
