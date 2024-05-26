@@ -32,7 +32,6 @@ public class Path
                 break;
             }
         }
-
     }
 
     private Vector2 V3ToV2(Vector3 _v3) {
@@ -50,5 +49,4 @@ public class Path
             l.DrawWithGizmos(10);
         }
     }
-
 }

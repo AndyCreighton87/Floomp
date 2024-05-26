@@ -8,26 +8,27 @@ public class GridManager : MonoBehaviour
 {
     public static GridManager Instance;
 
+    [Header("Debug")]
     [SerializeField] private bool displayGridGizmos;
 
-    public LayerMask unwalkableMask;
+    [Header("Terrain")]
+    [SerializeField] private LayerMask unwalkableMask;
+    [SerializeField] private TerrainType[] walkableRegions;
 
-    public TerrainType[] walkableRegions;
+    [Header("Parameters")]
+    [SerializeField] private int obstacleProximityPenalty = 10;
+    [SerializeField] private Vector2 gridWorldSize;
+    [SerializeField] private float nodeRadius;
+
     private LayerMask walkableMask;
     private Dictionary<int, int> walkableRegionsDict = new Dictionary<int, int>();
-    public int obstacleProximityPenalty = 10;
+    public Node[,] grid { get; private set; }
 
-    public Vector2 gridWorldSize;
-
-    public float nodeRadius;
     private float nodeDiameter;
 
     private int gridSizeX;
     private int gridSizeY;
     public int MaxSize => gridSizeX * gridSizeY;
-
-    public Node[,] grid { get; private set; }
-    public List<Node> path;
 
     private int penaltyMin = int.MaxValue;
     private int penaltyMax = int.MinValue;

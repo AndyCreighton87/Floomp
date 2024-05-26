@@ -2,24 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PFTestClass : MonoBehaviour
+public class PathfindingUnit : MonoBehaviour
 {
     private const float pathUpdateMoveThreshold = 0.5f;
     private const float minPathUpdateTime = 0.2f;
 
-    public Transform target;
-
-    public float speed = 15f;
-
-    public float turnDistance = 5f;
-    public float turnSpeed = 3f;
-    public float stoppingDist = 10f;
-
+    [Header("Pathfinding Variables")]
+    [SerializeField] private  float speed = 15f;
+    [SerializeField] private float turnDistance = 5f;
+    [SerializeField] private float turnSpeed = 3f;
+    [SerializeField] private float stoppingDist = 10f;
 
     private Path path;
 
-    private void Start() {
-        StartCoroutine(UpdatePath());
+    public virtual void Init(Transform _target) {
+        if (_target != null) {
+            UpdatePath(_target);
+        }
     }
 
     private void OnPathFound(Vector3[] _waypoints, bool _success) {
@@ -30,22 +29,22 @@ public class PFTestClass : MonoBehaviour
         }
     }
 
-    private IEnumerator UpdatePath() {
+    private IEnumerator UpdatePath(Transform _target) {
         if (Time.timeSinceLevelLoad < 0.3f) {
             yield return new WaitForSeconds(0.3f);
         }
 
-        PathRequestManager.RequestPath(new PathRequest(transform.position, target.position, OnPathFound));
+        PathRequestManager.RequestPath(new PathRequest(transform.position, _target.position, OnPathFound));
 
         float sqrMoveTherhold = pathUpdateMoveThreshold * pathUpdateMoveThreshold;
-        Vector3 targetPosOld = target.position;
+        Vector3 targetPosOld = _target.position;
 
         while (true) {
             yield return new WaitForSeconds(minPathUpdateTime);
 
-            if((target.position - targetPosOld).sqrMagnitude > sqrMoveTherhold) {
-                PathRequestManager.RequestPath(new PathRequest(transform.position, target.position, OnPathFound));
-                targetPosOld = target.position;
+            if((_target.position - targetPosOld).sqrMagnitude > sqrMoveTherhold) {
+                PathRequestManager.RequestPath(new PathRequest(transform.position, _target.position, OnPathFound));
+                targetPosOld = _target.position;
             }
         }
     }

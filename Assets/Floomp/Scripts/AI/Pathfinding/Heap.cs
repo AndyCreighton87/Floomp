@@ -7,7 +7,6 @@ public class Heap<T> where T : IHeapItem<T>
 {
     private T[] items;
     private int currentItemCount;
-
     public int Count => currentItemCount;
 
     public Heap(int _capacity) {

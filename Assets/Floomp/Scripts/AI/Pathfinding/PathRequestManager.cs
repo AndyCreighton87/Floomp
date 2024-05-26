@@ -8,9 +8,9 @@ public class PathRequestManager : MonoBehaviour
 {
     private static PathRequestManager Instance;
 
-    private Queue<PathResult> results = new Queue<PathResult>();
-
     [SerializeField] private Pathfinding pathfinding;
+
+    private Queue<PathResult> results = new Queue<PathResult>();
 
     private void Awake() {
         Instance = this;
