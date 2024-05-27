@@ -48,7 +48,7 @@ public class Unit : MonoBehaviour
 
     // A units default state should be moving towards the enemy target
     private void SetDefaultState() {
-        Target target = TargetManager.Instance.GetTargetForOpposingTeam(Team);
+        Target target = TargetManager.Instance.GetClosestTarget(Team, position);
         State state = new MoveState(this, target.transform);
         SetState(state);
     }

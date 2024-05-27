@@ -18,27 +18,11 @@ public class TargetManager : MonoBehaviour
         Instance = this;
     }
 
-    // A lot of assumptions made here - that there are only two teams, and that each team will only have 1 target.
-    // For now this is correct, but if we ever open the game up, may need to alter this code
-    public Target GetTargetForTeam(Team _team) {
-        return targets.FirstOrDefault(target => target.Team == _team);
-    }
-
-    public Target GetTargetForOpposingTeam(Team _team) {
-        Team team = GetOpposingTeam(_team);
-        return GetTargetForTeam(team);
-    }
-
-    // This will do for now - but look to expand when/if we introduce additional teams
-    public Team GetOpposingTeam(Team _team) {
-        switch (_team) {
-            case Team.Blue:
-                return Team.Red;
-            case Team.Red: 
-                return Team.Blue;
-            default:
-                throw new System.ArgumentException("Unknown team: " + _team);
-        }
+    public Target GetClosestTarget(Team _team, Vector3 _positon) {
+        return targets
+            .Where(target => target.Team != _team)
+            .OrderBy(target => Vector3.Distance(target.position, _positon))
+            .FirstOrDefault();
     }
 }
 
