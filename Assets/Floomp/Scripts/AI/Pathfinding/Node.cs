@@ -19,6 +19,8 @@ public class Node : IHeapItem<Node>
 
     private int heapIndex;
 
+    public List<INodeObject> objects;
+
     public int HeapIndex {
         get {
             return heapIndex;
@@ -34,6 +36,8 @@ public class Node : IHeapItem<Node>
         gridX = _gridX;
         gridY = _gridY;
         movementPenalty = _penalty;
+
+        objects = new List<INodeObject>();
     }
 
     public int CompareTo(Node _nodeToCompare) {
@@ -44,5 +48,19 @@ public class Node : IHeapItem<Node>
         }
 
         return -compare;
+    }
+}
+
+public class NodeObjectComparer : IComparer<INodeObject> {
+    private readonly Node currentNode;
+
+    public NodeObjectComparer(Node _currentNode) {
+        currentNode = _currentNode;
+    }
+
+    public int Compare(INodeObject _obj1, INodeObject _obj2) {
+        float distance1 = Vector3.SqrMagnitude(_obj1.Position - currentNode.worldPos);
+        float distance2 = Vector3.SqrMagnitude(_obj2.Position - currentNode.worldPos);
+        return distance1.CompareTo(distance2);
     }
 }

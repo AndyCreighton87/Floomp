@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class GridManager : MonoBehaviour
@@ -167,6 +165,41 @@ public class GridManager : MonoBehaviour
         }
 
         return neighbours;
+    }
+
+    public void AddObjectToNode(Vector3 _worldPosition, INodeObject _object) => AddObjectToNode(NodeFromWorldPosition(_worldPosition), _object);
+    public void RemoveObjectFromNode(Vector3 _worldPosition, INodeObject _object) => RemoveObjectFromNode(NodeFromWorldPosition(_worldPosition), _object);
+
+    public void AddObjectToNode(Node _node, INodeObject _object) {
+        if (!_node.objects.Contains(_object)) {
+            _node.objects.Add(_object);
+        }
+    }
+
+    public void RemoveObjectFromNode(Node _node, INodeObject _object) {
+        if (_node.objects.Contains(_object)) {
+            _node.objects.Remove(_object);
+        }
+    }
+
+    public List<INodeObject> GetObjectsInSurroundingNode(Node _node, int _range) {
+        List<INodeObject> nodeObjects = new List<INodeObject>();
+
+        for (int x = -_range; x <= _range; x++) {
+            for (int y = -_range; y <= _range; y++) {
+                int checkX = _node.gridX + x;
+                int checkY = _node.gridY + y;
+
+                if (checkX >= 0 && checkX < gridSizeX &&
+                    checkY >= 0 && checkY < gridSizeY) {
+                    nodeObjects.AddRange(grid[checkX, checkY].objects);
+                }
+            }
+        }
+
+        NodeObjectComparer comparer = new NodeObjectComparer(_node);
+        nodeObjects.Sort(comparer);
+        return nodeObjects;
     }
 
     #region GIZMOS

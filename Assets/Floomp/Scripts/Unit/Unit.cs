@@ -2,33 +2,37 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Unit : MonoBehaviour
+[RequireComponent(typeof(PathfindingComponent))]
+public class Unit : MonoBehaviour, IAttackable, INodeObject
 {
     [SerializeField] private Team team;
 
-    [Header("Pathfinding Variables")]
-    [SerializeField] private float speed = 15f;
-    [SerializeField] private float turnDistance = 5f;
-    [SerializeField] private float turnSpeed = 3f;
-    [SerializeField] private float stoppingDist = 10f;
-
-    public float Speed => speed;
-    public float TurnDistance => turnDistance;
-    public float TurnSpeed => turnSpeed;
-    public float StoppingDist => stoppingDist;
+    [Header("Debug")]
+    public bool Stationary = false;
 
     public Team Team => team;
 
-    public Vector3 position => transform.position;
+    public Vector3 Position => transform.position;
+
+    public Transform Transform => transform;
 
     private State currentState;
+
+    public PathfindingComponent pathfinding { get; private set; }
 
     private void Start() {
         Init();
     }
 
     public void Init() {
-        SetDefaultState();
+        pathfinding = GetComponent<PathfindingComponent>();
+        pathfinding.OnNodeChanged += OnNodeChanged;
+
+        GridManager.Instance.AddObjectToNode(Position, this);
+
+        if (!Stationary) {
+            SetDefaultState();
+        }
     }
 
     private void Update() {
@@ -48,8 +52,23 @@ public class Unit : MonoBehaviour
 
     // A units default state should be moving towards the enemy target
     private void SetDefaultState() {
-        Target target = TargetManager.Instance.GetClosestTarget(Team, position);
-        State state = new MoveState(this, target.transform);
+        Target target = TargetManager.Instance.GetClosestTarget(Team, Position);
+
+        if (target != null) {
+            State state = new MoveState(this, target.transform, OnEnemyDetected);
+            SetState(state);
+        }
+    }
+
+    private void OnEnemyDetected(INodeObject _enemy) {
+        State state = new EngageState(this, _enemy.Transform);
         SetState(state);
+    }
+
+    private void OnNodeChanged(Node _newNode, Node _prevNode) {
+        GridManager gridManager = GridManager.Instance;
+
+        gridManager.AddObjectToNode(_newNode, this);
+        gridManager.RemoveObjectFromNode(_prevNode, this);
     }
 }
