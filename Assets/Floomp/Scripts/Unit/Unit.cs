@@ -6,21 +6,30 @@ using UnityEngine;
 public class Unit : MonoBehaviour, IAttackable, INodeObject
 {
     [SerializeField] private Team team;
-    [SerializeField] private float attackRange = 3.0f;
+    [SerializeField] private UnitData unitData;
 
     [Header("Debug")]
     public bool Stationary = false;
 
+    // IAttackable
     public Team Team => team;
+    public bool IsAlive => Health > 0;
 
+    // INodeObject
     public Vector3 Position => transform.position;
-
     public Transform Transform => transform;
 
+    // Unit Parameters
+    public int Health = 100;
+    public int AttackRange => unitData.attackRange;
+    public int AttackDamage => unitData.attackDamage;
+    public float AttackSpeed => unitData.attackSpeed;
+
+
+    // State
     private State currentState;
 
     public PathfindingComponent pathfinding { get; private set; }
-    public float AttackRange => attackRange;
 
     private void Start() {
         Init();
@@ -75,7 +84,21 @@ public class Unit : MonoBehaviour, IAttackable, INodeObject
     }
 
     private void BeginAttack(INodeObject _enemy) {
-        State state = new AttackState(this);
-        SetState(state);
+        if (_enemy is IAttackable _attackable) {
+            State state = new AttackState(this, _attackable, SetDefaultState);
+            SetState(state);
+        } else {
+            Debug.Log($"{_enemy} does not implement the IAttackable interface. Reverting to default state.");
+            SetDefaultState();
+        }
+    }
+
+    public void TakeDamage(int _damage) {
+        Health -= _damage;
+
+        if (Health < 0) {
+            State state = new DeathState(this);
+            SetState(state);
+        }
     }
 }

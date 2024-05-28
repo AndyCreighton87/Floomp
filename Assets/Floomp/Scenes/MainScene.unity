@@ -2001,7 +2001,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 1
-  attackRange: 1
+  unitData: {fileID: 11400000, guid: 55c5079b73b575445a47a699d5fd0474, type: 2}
   Stationary: 0
 --- !u!136 &1115361466
 CapsuleCollider:
@@ -2198,7 +2198,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
-  attackRange: 1
+  unitData: {fileID: 11400000, guid: 2bdb075eb79631e41bacdcd49c199829, type: 2}
   Stationary: 0
 --- !u!114 &1203901961
 MonoBehaviour:
