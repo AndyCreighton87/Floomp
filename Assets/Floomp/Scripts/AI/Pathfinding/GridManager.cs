@@ -22,7 +22,7 @@ public class GridManager : MonoBehaviour
     private Dictionary<int, int> walkableRegionsDict = new Dictionary<int, int>();
     public Node[,] grid { get; private set; }
 
-    private float nodeDiameter;
+    public float nodeDiameter { get; private set; }
 
     private int gridSizeX;
     private int gridSizeY;

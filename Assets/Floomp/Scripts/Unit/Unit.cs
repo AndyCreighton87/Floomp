@@ -6,6 +6,7 @@ using UnityEngine;
 public class Unit : MonoBehaviour, IAttackable, INodeObject
 {
     [SerializeField] private Team team;
+    [SerializeField] private float attackRange = 3.0f;
 
     [Header("Debug")]
     public bool Stationary = false;
@@ -19,6 +20,7 @@ public class Unit : MonoBehaviour, IAttackable, INodeObject
     private State currentState;
 
     public PathfindingComponent pathfinding { get; private set; }
+    public float AttackRange => attackRange;
 
     private void Start() {
         Init();
@@ -61,7 +63,7 @@ public class Unit : MonoBehaviour, IAttackable, INodeObject
     }
 
     private void OnEnemyDetected(INodeObject _enemy) {
-        State state = new EngageState(this, _enemy.Transform);
+        State state = new EngageState(this, _enemy, BeginAttack);
         SetState(state);
     }
 
@@ -70,5 +72,10 @@ public class Unit : MonoBehaviour, IAttackable, INodeObject
 
         gridManager.AddObjectToNode(_newNode, this);
         gridManager.RemoveObjectFromNode(_prevNode, this);
+    }
+
+    private void BeginAttack(INodeObject _enemy) {
+        State state = new AttackState(this);
+        SetState(state);
     }
 }

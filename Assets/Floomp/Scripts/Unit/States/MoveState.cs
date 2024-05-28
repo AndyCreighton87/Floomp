@@ -13,7 +13,7 @@ public class MoveState : State
     private GridManager gridManager;
     private Node currentNode;
 
-    private int enemyScanRange = 5;
+    private int enemyScanRange = 10;
 
     private Action<INodeObject> onEnemyDetected;
 
@@ -65,6 +65,7 @@ public class MoveState : State
                 IAttackable attackable = (IAttackable)obj;
                 if (attackable.Team != unit.Team) {
                     onEnemyDetected?.Invoke(obj);
+                    Debug.Log("Enemy detected");
                     return;
                 }
             }

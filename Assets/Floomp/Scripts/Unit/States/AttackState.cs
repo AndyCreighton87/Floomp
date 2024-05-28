@@ -7,7 +7,7 @@ public class AttackState : State {
     public AttackState(Unit _unit) : base(_unit) { }
 
     public override void Enter() {
-
+        Debug.Log("Attack state");
     }
 
     public override void Execute() {

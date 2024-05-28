@@ -30,7 +30,6 @@ public class Pathfinding : MonoBehaviour
 
                 if (currentNode == targetNode) {
                     pathSuccess = true;
-
                     break;
                 }
 

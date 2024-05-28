@@ -11,7 +11,7 @@ public class PathfindingComponent : MonoBehaviour
     [SerializeField] private float speed = 15f;
     [SerializeField] private float turnDistance = 5f;
     [SerializeField] private float turnSpeed = 3f;
-    [SerializeField] private float stoppingDist = 10f;
+    [SerializeField] private float stoppingDist = 1.0f;
 
     private Transform target;
     private Path path;
@@ -32,6 +32,8 @@ public class PathfindingComponent : MonoBehaviour
 
     public void StopMove() {
         StopAllCoroutines();
+        target = null;
+        path = null;
     }
 
     public void UpdateTarget(Transform _target) {
@@ -46,18 +48,6 @@ public class PathfindingComponent : MonoBehaviour
         }
 
         PathRequestManager.RequestPath(new PathRequest(transform.position, target.position, OnPathFound));
-
-        float sqrMoveTherhold = pathUpdateMoveThreshold * pathUpdateMoveThreshold;
-        Vector3 targetPosOld = target.position;
-
-        while (true) {
-            yield return new WaitForSeconds(minPathUpdateTime);
-
-            if ((target.position - targetPosOld).sqrMagnitude > sqrMoveTherhold) {
-                PathRequestManager.RequestPath(new PathRequest(transform.position, target.position, OnPathFound));
-                targetPosOld = target.position;
-            }
-        }
     }
 
     private void OnPathFound(Vector3[] _waypoints, bool _success) {
@@ -74,7 +64,7 @@ public class PathfindingComponent : MonoBehaviour
         int pathIndex = 0;
         transform.LookAt(path.lookPoints[0]);
 
-        float speedpercent = 1f;
+        float speedPercent = 1f;
 
         while (followingPath) {
             Vector2 pos2D = new Vector2(transform.position.x, transform.position.z);
@@ -89,16 +79,24 @@ public class PathfindingComponent : MonoBehaviour
             }
 
             if (followingPath) {
+                // Slow down when close to target
                 if (pathIndex >= path.slowDownIndex && stoppingDist > 0) {
-                    speedpercent = Mathf.Clamp01(path.turnBoundaries[path.finishLineIndex].DistanceFromPoint(pos2D) / stoppingDist);
-                    if (speedpercent < 0.01f) {
+                    float distToTarget = path.turnBoundaries[path.finishLineIndex].DistanceFromPoint(pos2D);
+                    speedPercent = Mathf.Clamp01(distToTarget / stoppingDist);
+
+                    if (speedPercent < 0.01f) {
                         followingPath = false;
                     }
                 }
 
+                // Rotation
                 Quaternion targetRot = Quaternion.LookRotation(path.lookPoints[pathIndex] - transform.position);
                 transform.rotation = Quaternion.Lerp(transform.rotation, targetRot, Time.deltaTime * turnSpeed);
-                transform.Translate(Vector3.forward * Time.deltaTime * speed * speedpercent, Space.Self);
+                
+                // Translation
+                float finalSpeed = speed * speedPercent;
+                Vector3 pos = Vector3.forward * Time.deltaTime * finalSpeed;
+                transform.Translate(pos, Space.Self);
             }
 
             CheckUpdateCurrentNode();
@@ -119,6 +117,12 @@ public class PathfindingComponent : MonoBehaviour
             }
     
             lastPosition = newPosition;
+        }
+    }
+
+    public void OnDrawGizmos() {
+        if (path != null) {
+            path.DrawWithGizmos();
         }
     }
 }

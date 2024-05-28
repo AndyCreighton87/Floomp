@@ -56,7 +56,6 @@ public class CameraController : MonoBehaviour
 
     private void Zoom(float _value) {
         scrollAmount = _value * scrollSpeed * Time.deltaTime;
-        Debug.Log("Zoom triggered");
     }
 
     private void ZoomEnded() {
