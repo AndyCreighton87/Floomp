@@ -60,7 +60,7 @@ public class Pathfinding : MonoBehaviour
             pathSuccess = waypoints.Length > 0;
         }
 
-        _callback(new PathResult(waypoints, pathSuccess, _request.callback));
+        _callback(new PathResult(waypoints, pathSuccess, _request.callback, _request.requestID));
     }
 
     private Vector3[] RetracePath(Node _startNode, Node _endNode) {

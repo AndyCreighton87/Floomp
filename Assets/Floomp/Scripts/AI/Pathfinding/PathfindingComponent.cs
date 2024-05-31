@@ -22,7 +22,15 @@ public class PathfindingComponent : MonoBehaviour
 
     [HideInInspector] public Action<Node, Node> OnNodeChanged;
 
+    private int currentPathID;
+
+    private Coroutine pathCoroutine;
+
     public void MoveTo(Transform _target) {
+        currentPathID++;
+
+        CancelPath();
+
         target = _target;
         currentNode = GridManager.Instance.NodeFromWorldPosition(transform.position);
         lastPosition = transform.position;
@@ -47,15 +55,19 @@ public class PathfindingComponent : MonoBehaviour
             yield return new WaitForSeconds(0.3f);
         }
 
-        PathRequestManager.RequestPath(new PathRequest(transform.position, target.position, OnPathFound));
+        PathRequestManager.RequestPath(new PathRequest(transform.position, target.position, OnPathFound, currentPathID));
     }
 
-    private void OnPathFound(Vector3[] _waypoints, bool _success) {
+    private void OnPathFound(Vector3[] _waypoints, bool _success, int _requestID) {
+        if (_requestID != currentPathID) {
+            return;
+        }
+
         if (_success) {
             path = new Path(_waypoints, transform.position, turnDistance, stoppingDist);
 
             StopCoroutine(FollowPath());
-            StartCoroutine(FollowPath());
+            pathCoroutine = StartCoroutine(FollowPath());
         }
     }
 
@@ -117,6 +129,12 @@ public class PathfindingComponent : MonoBehaviour
             }
     
             lastPosition = newPosition;
+        }
+    }
+
+    public void CancelPath() {
+        if (pathCoroutine != null) {
+            StopCoroutine(pathCoroutine);
         }
     }
 

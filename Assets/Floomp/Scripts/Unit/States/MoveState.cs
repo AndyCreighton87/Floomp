@@ -63,7 +63,7 @@ public class MoveState : State
         foreach(INodeObject obj in objects) {
             if (obj != null && obj is IAttackable) {
                 IAttackable attackable = (IAttackable)obj;
-                if (attackable.Team != unit.Team) {
+                if (attackable.IsAlive && attackable.Team != unit.Team) {
                     onEnemyDetected?.Invoke(obj);
                     Debug.Log("Enemy detected");
                     return;
