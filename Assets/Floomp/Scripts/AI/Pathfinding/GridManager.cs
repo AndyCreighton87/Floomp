@@ -170,6 +170,11 @@ public class GridManager : MonoBehaviour
     public void AddObjectToNode(Vector3 _worldPosition, INodeObject _object) => AddObjectToNode(NodeFromWorldPosition(_worldPosition), _object);
     public void RemoveObjectFromNode(Vector3 _worldPosition, INodeObject _object) => RemoveObjectFromNode(NodeFromWorldPosition(_worldPosition), _object);
 
+    public void RemoveObjectFromNode(INodeObject _object) {
+        Node node = NodeFromWorldPosition(_object.Position);
+        RemoveObjectFromNode(node, _object);
+    }
+
     public void AddObjectToNode(Node _node, INodeObject _object) {
         if (!_node.objects.Contains(_object)) {
             _node.objects.Add(_object);

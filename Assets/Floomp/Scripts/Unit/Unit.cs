@@ -6,7 +6,6 @@ using UnityEngine;
 public class Unit : MonoBehaviour, IAttackable, INodeObject
 {
     [SerializeField] private Team team;
-    [SerializeField] private UnitData unitData;
 
     [Header("Debug")]
     public bool Stationary = false;
@@ -20,10 +19,15 @@ public class Unit : MonoBehaviour, IAttackable, INodeObject
     public Transform Transform => transform;
 
     // Unit Parameters
-    public int Health = 100;
-    public int AttackRange => unitData.attackRange;
-    public int AttackDamage => unitData.attackDamage;
-    public float AttackSpeed => unitData.attackSpeed;
+    [SerializeField] private int health = 100;
+    [SerializeField] private int attackRange = 1;
+    [SerializeField] private int attackDamage = 10;
+    [SerializeField] private int attackSpeed = 1;
+
+    public int Health => health;
+    public int AttackRange => attackRange;
+    public int AttackDamage => attackDamage;
+    public float AttackSpeed => attackSpeed;
 
 
     // State
@@ -63,6 +67,10 @@ public class Unit : MonoBehaviour, IAttackable, INodeObject
 
     // A units default state should be moving towards the enemy target
     private void SetDefaultState() {
+        if (!IsAlive) {
+            return;
+        }
+
         Target target = TargetManager.Instance.GetClosestTarget(Team, Position);
 
         if (target != null) {
@@ -72,6 +80,10 @@ public class Unit : MonoBehaviour, IAttackable, INodeObject
     }
 
     private void OnEnemyDetected(INodeObject _enemy) {
+        if (!IsAlive) {
+            return;
+        }
+
         State state = new EngageState(this, _enemy, BeginAttack);
         SetState(state);
     }
@@ -94,11 +106,16 @@ public class Unit : MonoBehaviour, IAttackable, INodeObject
     }
 
     public void TakeDamage(int _damage) {
-        Health -= _damage;
+        health -= _damage;
 
-        if (Health < 0) {
+        if (Health <= 0) {
             State state = new DeathState(this);
             SetState(state);
         }
+    }
+
+    public void ReportDeath() {
+        pathfinding.StopMove();
+        GridManager.Instance.RemoveObjectFromNode(this);
     }
 }

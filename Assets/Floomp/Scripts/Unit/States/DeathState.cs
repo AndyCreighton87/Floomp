@@ -8,6 +8,10 @@ public class DeathState : State {
 
     public override void Enter() {
         Debug.Log("Death state entered");
+
+        unit.pathfinding.StopMove();
+        GridManager.Instance.RemoveObjectFromNode(unit);
+        unit.StartCoroutine(DestroyUnitAfterDelay());
     }
 
     public override void Execute() {
@@ -16,5 +20,11 @@ public class DeathState : State {
 
     public override void Exit() {
 
+    }
+
+    // This will eventually be replaced by an animation - the delay from the death animation should suffice
+    private IEnumerator DestroyUnitAfterDelay() {
+        yield return new WaitForSeconds(1.0f);
+        GameObject.Destroy(unit.gameObject);
     }
 }
