@@ -1,17 +1,16 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(PathfindingComponent))]
-public class Unit : MonoBehaviour, IAttackable, INodeObject
+public class Unit : PoolableObject, IAttackable, INodeObject
 {
-    [SerializeField] private Team team;
-
     [Header("Debug")]
     public bool Stationary = false;
 
     // IAttackable
-    public Team Team => team;
     public bool IsAlive => Health > 0;
 
     // INodeObject
@@ -29,17 +28,19 @@ public class Unit : MonoBehaviour, IAttackable, INodeObject
     public int AttackDamage => attackDamage;
     public float AttackSpeed => attackSpeed;
 
-
     // State
     private State currentState;
 
+    // Team
+    public Team Team { get; set; }
+    [SerializeField] private Renderer unitRenderer;
+
     public PathfindingComponent pathfinding { get; private set; }
 
-    private void Start() {
-        Init();
-    }
+    public void Init(Team _team) {
+        Team = _team;
+        SetTeam(Team);
 
-    public void Init() {
         pathfinding = GetComponent<PathfindingComponent>();
         pathfinding.OnNodeChanged += OnNodeChanged;
 
@@ -84,7 +85,7 @@ public class Unit : MonoBehaviour, IAttackable, INodeObject
             return;
         }
 
-        State state = new EngageState(this, _enemy, BeginAttack);
+        State state = new EngageState(this, _enemy, BeginAttack, SetDefaultState);
         SetState(state);
     }
 
@@ -117,5 +118,17 @@ public class Unit : MonoBehaviour, IAttackable, INodeObject
     public void ReportDeath() {
         pathfinding.StopMove();
         GridManager.Instance.RemoveObjectFromNode(this);
+    }
+
+    // Just for debugging to make things easier - will make a more concrete solution later
+    public void SetTeam(Team _team) {
+        switch (_team) {
+            case Team.Blue:
+                unitRenderer.material.color = Color.blue;
+                break;
+            case Team.Red:
+                unitRenderer.material.color = Color.red;
+                break;
+        }
     }
 }

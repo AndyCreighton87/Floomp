@@ -9,10 +9,12 @@ public class EngageState : State {
     private INodeObject target;
 
     private Action<INodeObject> onEnteredAttackRange;
+    private Action onTargetDead;
 
-    public EngageState(Unit _unit, INodeObject _target, Action<INodeObject> _callback) : base(_unit) {
+    public EngageState(Unit _unit, INodeObject _target, Action<INodeObject> _onEnteredAttackRange, Action _onTargetDead) : base(_unit) {
         target = _target;
-        onEnteredAttackRange = _callback;
+        onEnteredAttackRange = _onEnteredAttackRange;
+        onTargetDead = _onTargetDead;
     }
 
     public override void Enter() {
@@ -20,6 +22,13 @@ public class EngageState : State {
     }
 
     public override void Execute() {
+        Unit test = target as Unit;
+
+        if (target == null || !test.IsAlive) {
+            onTargetDead?.Invoke();
+            return;
+        }
+
         unit.pathfinding.UpdateTarget(target.Transform);
         CheckDistanceToTarget();
     }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public interface IAttackable
 {
-    public Team Team { get; }
+    public Team Team { get; set; }
 
     public bool IsAlive { get; }
 
