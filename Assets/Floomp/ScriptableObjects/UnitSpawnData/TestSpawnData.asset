@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e70c71693e74074449f7c466fc60299c, type: 3}
   m_Name: TestSpawnData
   m_EditorClassIdentifier: 
-  units:
-  - {fileID: 7630611911604513022, guid: 16461489af79a9d43a3208f84320e7c9, type: 3}
+  unit: {fileID: 7630611911604513022, guid: 16461489af79a9d43a3208f84320e7c9, type: 3}
   numToSpawn: 3
   spawnTime: 5
