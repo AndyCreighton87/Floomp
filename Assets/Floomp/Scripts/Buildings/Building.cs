@@ -16,7 +16,9 @@ public class Building : MonoBehaviour
 
     [SerializeField] private Transform[] spawnPoints;
 
-    public string UnitID => spawnData.unit.ID;
+    public string UnitID => spawnData.units[upgradeIndex].ID;
+
+    private int upgradeIndex = 0;
 
     // Num Of Units, Spawn Point Indicies
     private Dictionary<int, int[]> spawnLocationMapping = new Dictionary<int, int[]> {
@@ -53,13 +55,17 @@ public class Building : MonoBehaviour
             unit.transform.rotation = spawnPoint.rotation;
             unit.Init(Team);
         }
+    }
 
-        //foreach(Transform t in spawnPoints) {
-        //    string ID = spawnData.unit.ID;
-        //    Unit unit = (Unit)PoolManager.Instance.GetObject(ID);
-        //    unit.transform.position = t.position;
-        //    unit.transform.rotation = t.rotation;
-        //    unit.Init(team);
-        //}
+    public void Upgrade() {
+        upgradeIndex++;
+        upgradeIndex = Mathf.Clamp(upgradeIndex, 0, spawnData.units.Length - 1);
+        Debug.Log($"Unit upgraded. Upgrade Index {upgradeIndex}.");
+    }
+
+    private void Update() {
+        if(Input.GetKeyDown(KeyCode.U)) {
+            Upgrade();
+        }
     }
 }

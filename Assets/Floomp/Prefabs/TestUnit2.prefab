@@ -12,10 +12,10 @@ GameObject:
   - component: {fileID: 3578553610333052876}
   - component: {fileID: 5985662773137846723}
   - component: {fileID: 6332609702727728758}
-  - component: {fileID: 4740900702804481729}
   - component: {fileID: 8836588326899481583}
+  - component: {fileID: -8381676986399739728}
   m_Layer: 0
-  m_Name: TestUnit
+  m_Name: TestUnit2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -31,7 +31,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -85.1, y: 1.5, z: -87.5}
-  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -64,7 +64,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: b175bd2bd2411cd47be980bc8e45e1c1, type: 2}
+  - {fileID: 2100000, guid: 3c0bd347644999048810fe5a533a00a9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -109,25 +109,6 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &4740900702804481729
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9080201818920201425}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0b851c4e3dbe3ca4c9f13e3189ad9f7c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  id: BaseUnit
-  Stationary: 0
-  health: 100
-  attackRange: 1
-  attackDamage: 50
-  attackSpeed: 1
-  unitRenderer: {fileID: 5985662773137846723}
 --- !u!114 &8836588326899481583
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -144,3 +125,22 @@ MonoBehaviour:
   turnDistance: 10
   turnSpeed: 20
   stoppingDist: 6
+--- !u!114 &-8381676986399739728
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9080201818920201425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ede1dd76deb9031439bccccb466f6ef4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: TestUnit2
+  Stationary: 0
+  health: 100
+  attackRange: 1
+  attackDamage: 10
+  attackSpeed: 1
+  unitRenderer: {fileID: 5985662773137846723}
