@@ -1,8 +1,13 @@
 # Ignore everything in the Assets folder
 Assets/*
 
-# But keep these specific folders
-!Assets/Floomp/Scripts
+# But keep the Floomp/Scripts folder and its contents
+!Assets/Floomp/
+!Assets/Floomp/Scripts/
+!Assets/Floomp/Scripts/**
+
+# Exclude everything else in Floomp folder
+Assets/Floomp/*
 
 # Exclude meta files for assets that are ignored
 Assets/*.meta
