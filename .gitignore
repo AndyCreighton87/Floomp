@@ -12,6 +12,10 @@ Assets/Floomp/*
 # Exclude meta files for assets that are ignored
 Assets/*.meta
 
+# Ignore Packages and ProjectSettings directories
+Packages/
+ProjectSettings/
+
 # Ignore other Unity specific files and folders
 [Ll]ibrary/
 [Tt]emp/
