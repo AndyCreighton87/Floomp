@@ -2,7 +2,7 @@
 Assets/*
 
 # But keep these specific folders
-!Assets/Scripts/
+!Assets/Floomp/Scripts
 
 # Exclude meta files for assets that are ignored
 Assets/*.meta
