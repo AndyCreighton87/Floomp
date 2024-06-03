@@ -1,13 +1,15 @@
 # Ignore everything in the Assets folder
 Assets/*
 
-# But keep the Floomp/Scripts folder and its contents
+# But keep the Floomp folder
 !Assets/Floomp/
+
+# Ignore everything in the Floomp folder
+Assets/Floomp/*
+
+# But keep the Scripts folder and its contents
 !Assets/Floomp/Scripts/
 !Assets/Floomp/Scripts/**
-
-# Exclude everything else in Floomp folder
-Assets/Floomp/*
 
 # Exclude meta files for assets that are ignored
 Assets/*.meta
@@ -15,6 +17,9 @@ Assets/*.meta
 # Ignore Packages and ProjectSettings directories
 Packages/
 ProjectSettings/
+
+# Ignore Visual Studio configuration file
+.vsconfig
 
 # Ignore other Unity specific files and folders
 [Ll]ibrary/
