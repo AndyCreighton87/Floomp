@@ -21,6 +21,8 @@ public class Node : IHeapItem<Node>
 
     public List<INodeObject> objects;
 
+    public bool isBuildable = false;
+
     public int HeapIndex {
         get {
             return heapIndex;

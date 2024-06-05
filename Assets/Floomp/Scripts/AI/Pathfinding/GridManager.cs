@@ -6,6 +6,8 @@ public class GridManager : MonoBehaviour
 {
     public static GridManager Instance;
 
+    private readonly string BuildableAreaTag = "BuildableArea";
+
     [Header("Debug")]
     [SerializeField] private bool displayGridGizmos;
 
@@ -17,6 +19,11 @@ public class GridManager : MonoBehaviour
     [SerializeField] private int obstacleProximityPenalty = 10;
     [SerializeField] private Vector2 gridWorldSize;
     [SerializeField] private float nodeRadius;
+
+    [Header("BuildableAreas")]
+    [SerializeField] private Vector2Int buildableAreaSize = new Vector2Int (4, 3);
+
+    public Vector2Int BuildableAreaSize => buildableAreaSize;
 
     private LayerMask walkableMask;
     private Dictionary<int, int> walkableRegionsDict = new Dictionary<int, int>();
@@ -48,7 +55,24 @@ public class GridManager : MonoBehaviour
             walkableRegionsDict.Add((int)Mathf.Log(region.terrainMask.value, 2), region.terrainPenalty);
         }
 
+
         CreateGrid();
+
+        DetectBuildableAreas();
+    }
+
+    public void DetectBuildableAreas() {
+        GameObject[] markers = GameObject.FindGameObjectsWithTag(BuildableAreaTag);
+
+        foreach(GameObject marker in markers) {
+            Vector3 worldPos = marker.transform.position;
+            Node node = NodeFromWorldPosition(worldPos);
+            node.isBuildable = true;
+
+            foreach(Node n in GetNeighbours(node, buildableAreaSize.x, buildableAreaSize.y)) {
+                n.isBuildable = true;
+            }
+        }
     }
 
     private void CreateGrid() {
@@ -144,11 +168,11 @@ public class GridManager : MonoBehaviour
         }
     }
 
-    public List<Node> GetNeighbours(Node _node) {
+    public List<Node> GetNeighbours(Node _node, int _rangeX = 1, int _rangeY = 1) {
         List<Node> neighbours = new List<Node>();
 
-        for (int x = -1; x <= 1; x++) {
-            for (int y = -1; y <= 1; y++) {
+        for (int x = -_rangeX; x <= _rangeX; x++) {
+            for (int y = -_rangeY; y <= _rangeY; y++) {
 
                 if (x == 0 && y == 0) {
                     continue;
@@ -217,6 +241,7 @@ public class GridManager : MonoBehaviour
                 Gizmos.color = Color.Lerp(Color.white, Color.black, Mathf.InverseLerp(penaltyMin, penaltyMax, node.movementPenalty));
 
                 Gizmos.color = (node.walkable) ? Gizmos.color : Color.red;
+                Gizmos.color = node.isBuildable ? Color.yellow : Gizmos.color;
                 Gizmos.DrawCube(node.worldPos, Vector3.one * nodeDiameter);
             }
         }
