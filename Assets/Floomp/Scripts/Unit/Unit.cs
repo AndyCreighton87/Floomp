@@ -44,6 +44,9 @@ public class Unit : PoolableObject, IAttackable, INodeObject
         pathfinding = GetComponent<PathfindingComponent>();
         pathfinding.OnNodeChanged += OnNodeChanged;
 
+        HealthBar healthBar = PoolManager.Instance.GetObject("HealthBar") as HealthBar;
+        healthBar.BindToNodeObject(this);
+
         GridManager.Instance.AddObjectToNode(Position, this);
 
         if (!Stationary) {

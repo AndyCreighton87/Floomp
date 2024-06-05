@@ -1,4 +1,4 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,6 +7,8 @@ public class ObjectPool<T> where T : PoolableObject
     private Queue<T> objects = new Queue<T>();
     private T prefab;
     private Transform parent;
+
+    public Type objectType = typeof(T);
 
     public ObjectPool(T _prefab, int _initialSize, Transform _parent = null) {
         prefab = _prefab;

@@ -10,6 +10,7 @@ public class PoolManager : MonoBehaviour
 
     [SerializeField] private List<PoolableObject> objectPrefabs;
     [SerializeField] private int initialPoolSize = 10;
+    [SerializeField] private Transform UIParent;
 
     private Dictionary<string, ObjectPool<PoolableObject>> pools = new Dictionary<string, ObjectPool<PoolableObject>>();
 
@@ -26,8 +27,18 @@ public class PoolManager : MonoBehaviour
 
     private void BuildPools() {
         foreach(PoolableObject prefab in objectPrefabs) {
-            GameObject poolParent = new GameObject(prefab.name + " Pool");
-            poolParent.transform.parent = transform;
+            bool isUI = prefab.isUI;
+            GameObject poolParent = null;
+
+            if (isUI) {
+                poolParent = new GameObject(prefab.name + " Pool", typeof(RectTransform));
+                poolParent.transform.parent = UIParent;
+            }
+            else {
+                poolParent = new GameObject(prefab.name + " Pool");
+                poolParent.transform.parent = transform;
+            }
+
             var poolType = prefab.ID;
             var pool = new ObjectPool<PoolableObject>(prefab, initialPoolSize, poolParent.transform);
 
@@ -49,21 +60,4 @@ public class PoolManager : MonoBehaviour
             ((ObjectPool<PoolableObject>)pool).Return(_object);
         }
     }
-
-    //public T GetObject<T>() where T : PoolableObject {
-    //    Type type = typeof(T);
-    //
-    //    if (pools.TryGetValue(type, out var pool)) {
-    //        return ((ObjectPool<T>)pool).Get();
-    //    }
-    //
-    //    Debug.LogError($"No object pool found for type {typeof(T)}");
-    //    return null;
-    //}
-    //
-    //public void ReturnObject<T>(T _object) where T : PoolableObject {
-    //    if (pools.TryGetValue(typeof(T), out var pool)) {
-    //        ((ObjectPool<T>)pool).Return(_object);
-    //    }
-    //}
 }
