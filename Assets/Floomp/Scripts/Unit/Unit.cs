@@ -11,11 +11,14 @@ public class Unit : PoolableObject, IAttackable, INodeObject
     public bool Stationary = false;
 
     // IAttackable
+    public Transform Transform => transform;
     public bool IsAlive => Health > 0;
+
+    public event Action<int> OnHealthChanged;
 
     // INodeObject
     public Vector3 Position => transform.position;
-    public Transform Transform => transform;
+
 
     // Unit Parameters
     [SerializeField] private int health = 100;
@@ -35,6 +38,9 @@ public class Unit : PoolableObject, IAttackable, INodeObject
     public Team Team { get; set; }
     [SerializeField] private Renderer unitRenderer;
 
+    // Componenets
+    private HealthBar healthBar;
+
     public PathfindingComponent pathfinding { get; private set; }
 
     public void Init(Team _team) {
@@ -44,8 +50,8 @@ public class Unit : PoolableObject, IAttackable, INodeObject
         pathfinding = GetComponent<PathfindingComponent>();
         pathfinding.OnNodeChanged += OnNodeChanged;
 
-        HealthBar healthBar = PoolManager.Instance.GetObject("HealthBar") as HealthBar;
-        healthBar.BindToNodeObject(this);
+        healthBar = PoolManager.Instance.GetObject("HealthBar") as HealthBar;
+        healthBar.BindToAttackable(this);
 
         GridManager.Instance.AddObjectToNode(Position, this);
 
@@ -112,6 +118,8 @@ public class Unit : PoolableObject, IAttackable, INodeObject
     public void TakeDamage(int _damage) {
         health -= _damage;
 
+        OnHealthChanged?.Invoke(Health);
+
         if (Health <= 0) {
             State state = new DeathState(this);
             SetState(state);
@@ -121,6 +129,7 @@ public class Unit : PoolableObject, IAttackable, INodeObject
     public void ReportDeath() {
         pathfinding.StopMove();
         GridManager.Instance.RemoveObjectFromNode(this);
+        PoolManager.Instance.ReturnObject(healthBar);
     }
 
     // Just for debugging to make things easier - will make a more concrete solution later

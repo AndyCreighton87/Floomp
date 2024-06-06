@@ -9,8 +9,7 @@ public class DeathState : State {
     public override void Enter() {
         Debug.Log("Death state entered");
 
-        unit.pathfinding.StopMove();
-        GridManager.Instance.RemoveObjectFromNode(unit);
+        unit.ReportDeath();
         unit.StartCoroutine(DestroyUnitAfterDelay());
     }
 
