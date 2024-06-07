@@ -1,7 +1,4 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class PoolManager : MonoBehaviour
@@ -31,11 +28,11 @@ public class PoolManager : MonoBehaviour
             GameObject poolParent = null;
 
             if (isUI) {
-                poolParent = new GameObject(prefab.name + " Pool", typeof(RectTransform));
+                poolParent = new GameObject(prefab.name + StringLibrary.PoolSuffix, typeof(RectTransform));
                 poolParent.transform.parent = UIParent;
             }
             else {
-                poolParent = new GameObject(prefab.name + " Pool");
+                poolParent = new GameObject(prefab.name + StringLibrary.PoolSuffix);
                 poolParent.transform.parent = transform;
             }
 

@@ -14,8 +14,8 @@ public class FreeCamera : MonoBehaviour {
 
     void Update() {
         // Handle mouse look
-        yaw += lookSpeed * Input.GetAxis("Mouse X");
-        pitch -= lookSpeed * Input.GetAxis("Mouse Y");
+        yaw += lookSpeed * Input.GetAxis(StringLibrary.MouseX);
+        pitch -= lookSpeed * Input.GetAxis(StringLibrary.MouseY);
         pitch = Mathf.Clamp(pitch, -90f, 90f);
         transform.eulerAngles = new Vector3(pitch, yaw, 0.0f);
 
@@ -35,7 +35,7 @@ public class FreeCamera : MonoBehaviour {
             transform.Translate(Vector3.up * moveSpeed);
 
         // Handle zoom
-        float scroll = Input.GetAxis("Mouse ScrollWheel");
+        float scroll = Input.GetAxis(StringLibrary.MouseScrollWheel);
         transform.Translate(Vector3.forward * scroll * zoomSpeed);
     }
 

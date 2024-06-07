@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -28,5 +26,6 @@ public class TargetManager : MonoBehaviour
 
 public enum Team {
     Blue,
-    Red
+    Red,
+    Length
 }

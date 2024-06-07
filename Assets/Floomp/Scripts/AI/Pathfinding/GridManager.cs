@@ -6,8 +6,6 @@ public class GridManager : MonoBehaviour
 {
     public static GridManager Instance;
 
-    private readonly string BuildableAreaTag = "BuildableArea";
-
     [Header("Debug")]
     [SerializeField] private bool displayGridGizmos;
 
@@ -62,7 +60,7 @@ public class GridManager : MonoBehaviour
     }
 
     public void DetectBuildableAreas() {
-        GameObject[] markers = GameObject.FindGameObjectsWithTag(BuildableAreaTag);
+        GameObject[] markers = GameObject.FindGameObjectsWithTag(StringLibrary.BuildableAreaTag);
 
         foreach(GameObject marker in markers) {
             Vector3 worldPos = marker.transform.position;

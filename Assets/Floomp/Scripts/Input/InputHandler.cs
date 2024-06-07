@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -9,10 +7,6 @@ public class InputHandler : MonoBehaviour
     public static InputHandler Instance;
 
     [SerializeField] private InputActionAsset inputActionMap;
-
-    private string panHorizontalString = "PanHorizontal";
-    private string panVerticalString = "PanVertical";
-    private string zoomString = "Zoom";
 
     public InputAction panHorizontal { get; private set; }
     public InputAction panVertical { get; private set; }
@@ -40,9 +34,9 @@ public class InputHandler : MonoBehaviour
     }
 
     private void Start() {
-        panHorizontal = inputActionMap.FindAction(panHorizontalString);
-        panVertical = inputActionMap.FindAction(panVerticalString);
-        zoom = inputActionMap.FindAction(zoomString);
+        panHorizontal = inputActionMap.FindAction(StringLibrary.PanHorizontal);
+        panVertical = inputActionMap.FindAction(StringLibrary.PanVertical);
+        zoom = inputActionMap.FindAction(StringLibrary.Zoom);
 
         panHorizontal.started += (InputAction.CallbackContext context) => OnPanHorizontal.Invoke(context.ReadValue<float>());
         panHorizontal.canceled += (InputAction.CallbackContext context) => OnPanHorizontalEnded.Invoke();

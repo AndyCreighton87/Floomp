@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -17,14 +16,11 @@ public class MoveState : State
 
     private Action<INodeObject> onEnemyDetected;
 
-    public MoveState(Unit _unit, Transform _target, Action<INodeObject> _callback) : base(_unit) { 
-        target = _target;
-
-        // This shouldn't be in the move state - should be in unit instead
+    public MoveState(Unit _unit, Node _node, Transform _target, Action<INodeObject> _callback) : base(_unit) {
         gridManager = GridManager.Instance;
-        currentNode = gridManager.NodeFromWorldPosition(unit.Position);
 
-
+        target = _target;
+        currentNode = _node;
         onEnemyDetected = _callback;
     }
 

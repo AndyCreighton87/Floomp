@@ -1,7 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(PathfindingComponent))]
@@ -50,7 +47,7 @@ public class Unit : PoolableObject, IAttackable, INodeObject
         pathfinding = GetComponent<PathfindingComponent>();
         pathfinding.OnNodeChanged += OnNodeChanged;
 
-        healthBar = PoolManager.Instance.GetObject("HealthBar") as HealthBar;
+        healthBar = PoolManager.Instance.GetObject(StringLibrary.HealthBar) as HealthBar;
         healthBar.BindToAttackable(this);
 
         GridManager.Instance.AddObjectToNode(Position, this);
@@ -84,7 +81,8 @@ public class Unit : PoolableObject, IAttackable, INodeObject
         Target target = TargetManager.Instance.GetClosestTarget(Team, Position);
 
         if (target != null) {
-            State state = new MoveState(this, target.transform, OnEnemyDetected);
+            Node currentNode = GridManager.Instance.NodeFromWorldPosition(Position);
+            State state = new MoveState(this, currentNode, target.transform, OnEnemyDetected);
             SetState(state);
         }
     }
