@@ -9,7 +9,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private PlayerData playerData;
 
     private int numPlayers = 2;
-    private HashSet<Player> players = new HashSet<Player>();
+    private List<Player> players = new List<Player>();
     private int numActivePlayers => players.Count;
 
     private void Awake() {
@@ -31,8 +31,12 @@ public class GameManager : MonoBehaviour
     private void CreatePlayers() {
         for (int i = 0; i < numPlayers; i++) {
             Player player = new Player(playerData);
+
+            PlayerType playerType = IsPlayerControllingPlayer(i) ? PlayerType.ControllingPlayer : PlayerType.AIPlayer;
+            player.playerType = playerType;
             AssignTeamToPlayer(player, i);
             player.OnHealthDepleted += OnPlayerLost;
+
             players.Add(player);
         }
 
@@ -43,6 +47,10 @@ public class GameManager : MonoBehaviour
             }
 
             _player.team = (Team)_index;
+        }
+
+        bool IsPlayerControllingPlayer(int _index) {
+            return _index == 0;
         }
     }
 
