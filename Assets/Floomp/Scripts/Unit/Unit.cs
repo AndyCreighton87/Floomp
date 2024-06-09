@@ -1,7 +1,8 @@
+using Suriyun;
 using System;
 using UnityEngine;
 
-[RequireComponent(typeof(PathfindingComponent))]
+[RequireComponent(typeof(PathfindingComponent), typeof(AnimatorController))]
 public class Unit : PoolableObject, IAttackable, INodeObject
 {
     [Header("Debug")]
@@ -40,12 +41,16 @@ public class Unit : PoolableObject, IAttackable, INodeObject
 
     public PathfindingComponent pathfinding { get; private set; }
 
+    public AnimatorController animationController { get; private set; }
+
     public void Init(Team _team) {
         Team = _team;
-        SetTeam(Team);
+        //SetTeam(Team);
 
         pathfinding = GetComponent<PathfindingComponent>();
         pathfinding.OnNodeChanged += OnNodeChanged;
+
+        animationController = GetComponent<AnimatorController>();
 
         healthBar = PoolManager.Instance.GetObject(StringLibrary.HealthBar) as HealthBar;
         healthBar.BindToAttackable(this);

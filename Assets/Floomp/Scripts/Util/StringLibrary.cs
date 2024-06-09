@@ -20,4 +20,12 @@ public static class StringLibrary
     // UI
     public static readonly string HealthBar = "HealthBar";
 
+    // Animations
+    public static readonly string animationRef = "animation,";
+    public static readonly string idleAnimation = "Idle";
+    public static readonly string moveAnimation = "Move";
+    public static readonly string attackAnimation = "Attack";
+    public static readonly string damageAnimation = "Damage";
+    public static readonly string deathAnimation = "Death";
+
 }

@@ -22,6 +22,8 @@ public class MoveState : State
         target = _target;
         currentNode = _node;
         onEnemyDetected = _callback;
+
+        AnimationHandler.MoveToAnimation(_unit.animationController, StringLibrary.moveAnimation);
     }
 
     public override void Enter() {

@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class PoolableObject : MonoBehaviour
 {
+    [Header("Poolable Object")]
     [SerializeField] private string id;
     
     public bool isUI = false;

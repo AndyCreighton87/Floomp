@@ -10,6 +10,8 @@ public class DeathState : State {
 
         unit.ReportDeath();
         unit.StartCoroutine(DestroyUnitAfterDelay());
+
+        AnimationHandler.MoveToAnimation(unit.animationController, StringLibrary.deathAnimation);
     }
 
     public override void Execute() {
