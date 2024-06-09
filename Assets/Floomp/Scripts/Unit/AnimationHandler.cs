@@ -17,9 +17,9 @@ public static class AnimationHandler
         { StringLibrary.deathAnimation, 5 },
     };
 
-    public static void MoveToAnimation(AnimatorController _controller, string _animation) {
+    public static void MoveToAnimation(AnimatorController _controller, string _animation, bool loop = true) {
         if (animationMappings.TryGetValue(_animation, out var animationIndex)) {
-            _controller.SetInt(StringLibrary.animationRef + animationIndex);
+            _controller.SetInt(StringLibrary.animationRef + animationIndex, loop);
         }
         else {
             Debug.LogError($"No animation found for controller {_controller} with reference {_animation}");

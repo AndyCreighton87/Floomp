@@ -13,6 +13,7 @@ public class AttackState : State {
     }
 
     public override void Enter() {
+        unit.Transform.LookAt(target.Transform);
         unit.StartCoroutine(Attack());
     }
 
@@ -28,6 +29,7 @@ public class AttackState : State {
         while (target != null && target.IsAlive) {
             if (this == null) yield break;
             target.TakeDamage(unit.AttackDamage);
+            AnimationHandler.MoveToAnimation(unit.animationController, StringLibrary.attackAnimation, false);
 
             Debug.Log($"{unit.name} attacks {target} for {unit.AttackDamage}");
 
