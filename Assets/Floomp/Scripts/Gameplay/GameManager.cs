@@ -8,9 +8,8 @@ public class GameManager : MonoBehaviour
     [Header("Players")]
     [SerializeField] private PlayerData playerData;
 
-    private int numPlayers = 2;
-    private List<Player> players = new List<Player>();
-    private int numActivePlayers => players.Count;
+    private Player player;
+    private Player AI;
 
     private void Awake() {
         if (Instance != null) {
@@ -29,44 +28,20 @@ public class GameManager : MonoBehaviour
         CreatePlayers();
     }
     private void CreatePlayers() {
-        for (int i = 0; i < numPlayers; i++) {
-            Player player = new Player(playerData);
 
-            PlayerType playerType = IsPlayerControllingPlayer(i) ? PlayerType.ControllingPlayer : PlayerType.AIPlayer;
-            player.playerType = playerType;
-            AssignTeamToPlayer(player, i);
-            player.OnHealthDepleted += OnPlayerLost;
+        player = new Player(playerData);
+        player.playerType = PlayerType.ControllingPlayer;
+        player.team = Team.Blue;
+        player.OnHealthDepleted += OnPlayerLost;
 
-            players.Add(player);
-        }
-
-        void AssignTeamToPlayer(Player _player, int _index) {
-            if (_index >= (int)Team.Length) {
-                Debug.LogError($"Attempted to add {numPlayers} players, but there are only {(int)Team.Length} teams. No additional players will be added.");
-                return;
-            }
-
-            _player.team = (Team)_index;
-        }
-
-        bool IsPlayerControllingPlayer(int _index) {
-            return _index == 0;
-        }
+        AI = new Player(playerData);
+        AI.playerType = PlayerType.AIPlayer;
+        AI.team = Team.Red;
+        AI.OnHealthDepleted += OnPlayerLost;
     }
 
     private void OnPlayerLost(Player _loser) {
-        players.Remove(_loser);
-        CheckGameEnd();
-    }
-
-    private void CheckGameEnd() {
-        if (numActivePlayers == 1) {
-            GameEnd();
-        }
-
-        if (numActivePlayers <= 0) {
-            Debug.LogError("There are no players left! What happened???");
-        }
+        GameEnd();
     }
 
     private void GameEnd() {
