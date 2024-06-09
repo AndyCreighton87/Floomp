@@ -10,11 +10,12 @@ public class Building : MonoBehaviour
     [SerializeField] private string id;
     public string ID => id;
 
-    [SerializeField] private UnitSpawnData spawnData;
+    [SerializeField] private UnitCollectionData unitCollectionData;
 
     [SerializeField] private Transform[] spawnPoints;
 
-    public string UnitID => spawnData.units[upgradeIndex].ID;
+    public Unit Unit => unitCollectionData.units[upgradeIndex].unit;
+    public UnitSpawnData unitSpawnData => unitCollectionData.units[upgradeIndex];
 
     private int upgradeIndex = 0;
 
@@ -32,12 +33,14 @@ public class Building : MonoBehaviour
 
     private IEnumerator StartSpawnUnits() {
         while (true) {
-            yield return new WaitForSeconds(spawnData.spawnTime);
+            yield return new WaitForSeconds(unitSpawnData.spawnTime);
             SpawnUnit();
         }
     }
 
     private void SpawnUnit() {
+        UnitSpawnData spawnData = unitCollectionData.units[upgradeIndex];
+
         int numToSpawn = spawnData.numToSpawn;
         int[] spawnPointIndicies = spawnLocationMapping[numToSpawn];
 
@@ -48,16 +51,16 @@ public class Building : MonoBehaviour
 
         for (int i = 0; i < numToSpawn; i++) {
             Transform spawnPoint = spawnPoints[spawnPointIndicies[i]];
-            Unit unit = (Unit)PoolManager.Instance.GetObject(UnitID);
-            unit.transform.position = spawnPoint.position;
-            unit.transform.rotation = spawnPoint.rotation;
-            unit.Init(Team);
+            Unit newUnit = (Unit)PoolManager.Instance.GetObject(Unit.ID);
+            newUnit.transform.position = spawnPoint.position;
+            newUnit.transform.rotation = spawnPoint.rotation;
+            newUnit.Init(Team);
         }
     }
 
     public void Upgrade() {
         upgradeIndex++;
-        upgradeIndex = Mathf.Clamp(upgradeIndex, 0, spawnData.units.Length - 1);
+        upgradeIndex = Mathf.Clamp(upgradeIndex, 0, unitCollectionData.units.Length - 1);
         Debug.Log($"Unit upgraded. Upgrade Index {upgradeIndex}.");
     }
 

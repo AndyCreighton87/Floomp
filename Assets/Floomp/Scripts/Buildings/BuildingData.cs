@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "UnitSpawnData", menuName = "ScriptableObjects/UnitSpawnData")]
+[CreateAssetMenu(fileName = "BuildingData", menuName = "Floomp/BuildingData")]
 
 public class BuildingData : ScriptableObject
 {

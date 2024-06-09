@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "PlayerData", menuName = "ScriptableObjects/PlayerData")]
+[CreateAssetMenu(fileName = "PlayerData", menuName = "Floomp/PlayerData")]
 public class PlayerData : ScriptableObject
 {
     public int startingCurrency;
