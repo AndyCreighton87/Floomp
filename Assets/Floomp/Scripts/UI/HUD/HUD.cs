@@ -18,7 +18,7 @@ public class HUD : MonoBehaviour
         Instance = this;
     }
 
-    private void Init(List<Player> _players) {
+    public void Init(List<Player> _players) {
         for(int i = 0; i < _players.Count; i++) {
             SetupPlayerHealthBar(_players[i], i);
 

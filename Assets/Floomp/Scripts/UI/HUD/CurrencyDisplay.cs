@@ -7,6 +7,7 @@ public class CurrencyDisplay : MonoBehaviour
 
     public void BindToPlayer(Player _player) {
         _player.OnCurrencyChanged += UpdateCurrency;
+        UpdateCurrency(_player.currency);
     }
 
     private void UpdateCurrency(int _value) {

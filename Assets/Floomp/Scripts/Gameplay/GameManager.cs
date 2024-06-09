@@ -8,6 +8,9 @@ public class GameManager : MonoBehaviour
     [Header("Players")]
     [SerializeField] private PlayerData playerData;
 
+    [Header("UI")]
+    [SerializeField] private HUD hud;
+
     private Player player;
     private Player AI;
 
@@ -26,6 +29,7 @@ public class GameManager : MonoBehaviour
 
     private void StartGame() {
         CreatePlayers();
+        SetUpHUD();
     }
     private void CreatePlayers() {
 
@@ -38,6 +42,10 @@ public class GameManager : MonoBehaviour
         AI.playerType = PlayerType.AIPlayer;
         AI.team = Team.Red;
         AI.OnHealthDepleted += OnPlayerLost;
+    }
+
+    private void SetUpHUD() {
+        hud.Init(new List<Player> { player, AI });
     }
 
     private void OnPlayerLost(Player _loser) {
