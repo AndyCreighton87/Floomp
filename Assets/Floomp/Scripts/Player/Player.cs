@@ -28,7 +28,7 @@ public class Player
         health += _value;
         Mathf.Clamp(health, 0, health);
 
-        OnHealthChanged.Invoke(health);
+        OnHealthChanged?.Invoke(health);
 
         CheckHealthDepleted();
     }
@@ -37,7 +37,7 @@ public class Player
         currency += _value;
         Mathf.Clamp(currency, 0, currency);
 
-        OnCurrencyChanged.Invoke(currency);
+        OnCurrencyChanged?.Invoke(currency);
     }
 
     public void CheckHealthDepleted() {

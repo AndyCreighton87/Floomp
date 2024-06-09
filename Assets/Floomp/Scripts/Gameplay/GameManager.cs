@@ -56,4 +56,29 @@ public class GameManager : MonoBehaviour
         // Throw win notification
     }
 
+    public Player GetPlayerOfTeam(Team _team) {
+        if (player.team == _team) {
+            return player;
+        }
+
+        if (AI.team == _team) {
+            return AI;
+        }
+
+        Debug.Log($"No player found with team {_team}.");
+        return null;
+    }
+
+    public Player GetOpposingPlayerOfTeam(Team _team) {
+        if (player.team == _team) {
+            return AI;
+        }
+
+        if (AI.team == _team) {
+            return player;
+        }
+
+        Debug.Log($"No player found with team {_team}.");
+        return null;
+    }
 }
