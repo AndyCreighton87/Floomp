@@ -5,7 +5,7 @@ using UnityEngine;
 public class PathfindingComponent : MonoBehaviour
 {
     private const float pathUpdateMoveThreshold = 0.5f;
-    private const float minPathUpdateTime = 0.2f;
+    private const float minPathUpdateTime = 0.5f;
 
     [SerializeField] private float speed = 15f;
     [SerializeField] private float turnDistance = 5f;
@@ -23,24 +23,17 @@ public class PathfindingComponent : MonoBehaviour
 
     private int currentPathID;
 
-    private Coroutine pathCoroutine;
+    private Coroutine followPathCoroutine;
+    private Coroutine updatePathCoroutine;
 
     public void MoveTo(Transform _target) {
-        currentPathID++;
-
         CancelPath();
 
         target = _target;
         currentNode = GridManager.Instance.NodeFromWorldPosition(transform.position);
         lastPosition = transform.position;
 
-        StartCoroutine(UpdatePath());
-    }
-
-    public void StopMove() {
-        StopAllCoroutines();
-        target = null;
-        path = null;
+        updatePathCoroutine = StartCoroutine(UpdatePath());
     }
 
     public void UpdateTarget(Transform _target) {
@@ -53,20 +46,31 @@ public class PathfindingComponent : MonoBehaviour
         if (Time.timeSinceLevelLoad < 0.3f) {
             yield return new WaitForSeconds(0.3f);
         }
-
-        PathRequestManager.RequestPath(new PathRequest(transform.position, target.position, OnPathFound, currentPathID));
+        
+        PathRequestManager.RequestPath(new PathRequest(transform.position, target.position, OnPathFound));
+        
+        float sqrMoveThreshold = pathUpdateMoveThreshold * pathUpdateMoveThreshold;
+        Vector3 prevPos = target.position;
+        
+        while (true) {
+            yield return new WaitForSeconds(minPathUpdateTime);
+            if ((target.position - prevPos).sqrMagnitude > sqrMoveThreshold) {
+                PathRequestManager.RequestPath(new PathRequest(transform.position, target.position, OnPathFound));
+                prevPos = target.position;
+            }
+        }
     }
 
-    private void OnPathFound(Vector3[] _waypoints, bool _success, int _requestID) {
-        if (_requestID != currentPathID) {
-            return;
-        }
-
+    private void OnPathFound(Vector3[] _waypoints, bool _success) {
         if (_success) {
             path = new Path(_waypoints, transform.position, turnDistance, stoppingDist);
 
-            StopCoroutine(FollowPath());
-            pathCoroutine = StartCoroutine(FollowPath());
+            if (followPathCoroutine != null) {
+                StopCoroutine(followPathCoroutine);
+                followPathCoroutine = null;
+            }
+
+            followPathCoroutine = StartCoroutine(FollowPath());
         }
     }
 
@@ -79,7 +83,7 @@ public class PathfindingComponent : MonoBehaviour
 
         while (followingPath) {
             Vector2 pos2D = new Vector2(transform.position.x, transform.position.z);
-            while (path.turnBoundaries[pathIndex].HasCrossedLine(pos2D)) {
+            while (pathIndex <= path.finishLineIndex && path.turnBoundaries[pathIndex].HasCrossedLine(pos2D)) {
                 if (pathIndex == path.finishLineIndex) {
                     followingPath = false;
                     break;
@@ -90,16 +94,6 @@ public class PathfindingComponent : MonoBehaviour
             }
 
             if (followingPath) {
-                // Slow down when close to target
-                if (pathIndex >= path.slowDownIndex && stoppingDist > 0) {
-                    float distToTarget = path.turnBoundaries[path.finishLineIndex].DistanceFromPoint(pos2D);
-                    speedPercent = Mathf.Clamp01(distToTarget / stoppingDist);
-
-                    if (speedPercent < 0.01f) {
-                        followingPath = false;
-                    }
-                }
-
                 // Rotation
                 Quaternion targetRot = Quaternion.LookRotation(path.lookPoints[pathIndex] - transform.position);
                 transform.rotation = Quaternion.Lerp(transform.rotation, targetRot, Time.deltaTime * turnSpeed);
@@ -132,8 +126,14 @@ public class PathfindingComponent : MonoBehaviour
     }
 
     public void CancelPath() {
-        if (pathCoroutine != null) {
-            StopCoroutine(pathCoroutine);
+        if (followPathCoroutine != null) {
+            StopCoroutine(followPathCoroutine);
+            followPathCoroutine = null;
+        }
+        
+        if (updatePathCoroutine != null) {
+            StopCoroutine(updatePathCoroutine);
+            updatePathCoroutine = null;
         }
     }
 

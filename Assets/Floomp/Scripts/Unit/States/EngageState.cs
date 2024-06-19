@@ -25,12 +25,11 @@ public class EngageState : State {
             return;
         }
 
-        unit.pathfinding.UpdateTarget(target.Transform);
         CheckDistanceToTarget();
     }
 
     public override void Exit() {
-        unit.pathfinding.StopMove();
+        unit.pathfinding.CancelPath();
     }
 
     private void CheckDistanceToTarget() {

@@ -36,7 +36,7 @@ public class MoveState : State
     }
 
     public override void Exit() {
-        unit.pathfinding.StopMove();
+
     }
 
     private void CheckUpdateCurrentNode() {

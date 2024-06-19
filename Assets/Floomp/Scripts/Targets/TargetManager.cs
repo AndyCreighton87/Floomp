@@ -22,6 +22,11 @@ public class TargetManager : MonoBehaviour
             .OrderBy(target => Vector3.Distance(target.position, _positon))
             .FirstOrDefault();
     }
+
+    public Target GetTargetTest() {
+
+       return targets[1];
+    }
 }
 
 public enum Team {

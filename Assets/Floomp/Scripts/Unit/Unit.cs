@@ -130,7 +130,7 @@ public class Unit : PoolableObject, IAttackable, INodeObject
     }
 
     public void ReportDeath() {
-        pathfinding.StopMove();
+        pathfinding.CancelPath();
         CurrencyManager.Instance.NotifyUnitKilled(Team);
         GridManager.Instance.RemoveObjectFromNode(this);
         PoolManager.Instance.ReturnObject(healthBar);
