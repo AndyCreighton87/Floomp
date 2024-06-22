@@ -18,11 +18,6 @@ public class GridManager : MonoBehaviour
     [SerializeField] private Vector2 gridWorldSize;
     [SerializeField] private float nodeRadius;
 
-    [Header("BuildableAreas")]
-    [SerializeField] private Vector2Int buildableAreaSize = new Vector2Int (4, 3);
-
-    public Vector2Int BuildableAreaSize => buildableAreaSize;
-
     private LayerMask walkableMask;
     private Dictionary<int, int> walkableRegionsDict = new Dictionary<int, int>();
     public Node[,] grid { get; private set; }
@@ -61,13 +56,19 @@ public class GridManager : MonoBehaviour
 
     public void DetectBuildableAreas() {
         GameObject[] markers = GameObject.FindGameObjectsWithTag(StringLibrary.BuildableAreaTag);
-
+    
         foreach(GameObject marker in markers) {
-            Vector3 worldPos = marker.transform.position;
+            BuildableAreaMarker buildableAreaMarker = marker.GetComponent<BuildableAreaMarker>();
+            BuildableAreaData data = buildableAreaMarker.GetData();
+
+            Vector3 worldPos = data.position;
             Node node = NodeFromWorldPosition(worldPos);
             node.isBuildable = true;
 
-            foreach(Node n in GetNeighbours(node, buildableAreaSize.x, buildableAreaSize.y)) {
+            Vector3 topLeft = new Vector3(worldPos.x - data.width / 2, worldPos.y, worldPos.z + data.height / 2);
+            Vector3 bottomRight = new Vector3(worldPos.x + data.width / 2, worldPos.y, worldPos.z - data.height / 2);
+
+            foreach(Node n in GetNodesWithinBounds(topLeft, bottomRight)) {
                 n.isBuildable = true;
             }
         }
@@ -189,6 +190,27 @@ public class GridManager : MonoBehaviour
         return neighbours;
     }
 
+    public List<Node> GetNodesWithinBounds(Vector3 position1, Vector3 position2) {
+        List<Node> nodes = new List<Node>();
+
+        Node node1 = NodeFromWorldPosition(position1);
+        Node node2 = NodeFromWorldPosition(position2);
+
+        int startX = Mathf.Min(node1.gridX, node2.gridX);
+        int endX = Mathf.Max(node1.gridX, node2.gridX);
+        int startY = Mathf.Min(node1.gridY, node2.gridY);
+        int endY = Mathf.Max(node1.gridY, node2.gridY);
+
+        for (int x = startX; x <= endX; x++) {
+            for (int y = startY; y <= endY; y++) {
+                if (x >= 0 && x < gridSizeX && y >= 0 && y < gridSizeY) {
+                    nodes.Add(grid[x, y]);
+                }
+            }
+        }
+
+        return nodes;
+    }
     public void AddObjectToNode(Vector3 _worldPosition, INodeObject _object) => AddObjectToNode(NodeFromWorldPosition(_worldPosition), _object);
     public void RemoveObjectFromNode(Vector3 _worldPosition, INodeObject _object) => RemoveObjectFromNode(NodeFromWorldPosition(_worldPosition), _object);
 

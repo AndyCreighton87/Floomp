@@ -6,11 +6,27 @@ public class BuildableAreaMarker : MonoBehaviour {
 
     private DecalProjector decalProjector;
 
-    private void Start() {
-        decalProjector = GetComponent<DecalProjector>();
+    private BuildableAreaData buildableAreaData;
 
-        Vector2Int areaSize = GridManager.Instance.BuildableAreaSize;
-        Vector3 newSize = new Vector3(areaSize.x, decalProjector.size.y, areaSize.y);
-        decalProjector.size = newSize;
+    public BuildableAreaData GetData() {
+        if (decalProjector == null) {
+            decalProjector = GetComponent<DecalProjector>();
+        }
+
+        if (buildableAreaData == null) {
+            buildableAreaData = new BuildableAreaData {
+                width = decalProjector.size.x,
+                height = decalProjector.size.z,
+                position = transform.position
+            };
+        }
+
+        return buildableAreaData;
     }
+}
+
+public class BuildableAreaData {
+    public float width;
+    public float height;
+    public Vector3 position;
 }
