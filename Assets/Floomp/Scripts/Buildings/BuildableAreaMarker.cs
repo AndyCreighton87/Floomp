@@ -2,7 +2,8 @@ using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
 [RequireComponent(typeof(DecalProjector))]
-public class BuildableAreaMarker : MonoBehaviour {
+[RequireComponent(typeof(BoxCollider))]
+public class BuildableAreaMarker : Interactable {
 
     private DecalProjector decalProjector;
 
@@ -22,6 +23,10 @@ public class BuildableAreaMarker : MonoBehaviour {
         }
 
         return buildableAreaData;
+    }
+
+    public override void OnInteract() {
+        Debug.Log("Buildable Area Marker Interacted");
     }
 }
 

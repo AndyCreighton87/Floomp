@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using UnityEngine.EventSystems;
 
 public class InputHandler : MonoBehaviour
 {
@@ -8,9 +9,14 @@ public class InputHandler : MonoBehaviour
 
     [SerializeField] private InputActionAsset inputActionMap;
 
+    [Header("Layer Masks")]
+    [SerializeField] private LayerMask interactableLayer;
+
     public InputAction panHorizontal { get; private set; }
     public InputAction panVertical { get; private set; }
     public InputAction zoom { get; private set; }
+
+    public InputAction leftClick { get; private set; }
 
 
     [HideInInspector] public UnityEvent<float> OnPanHorizontal = new UnityEvent<float>();
@@ -37,6 +43,7 @@ public class InputHandler : MonoBehaviour
         panHorizontal = inputActionMap.FindAction(StringLibrary.PanHorizontal);
         panVertical = inputActionMap.FindAction(StringLibrary.PanVertical);
         zoom = inputActionMap.FindAction(StringLibrary.Zoom);
+        leftClick = inputActionMap.FindAction(StringLibrary.LeftClick);
 
         panHorizontal.started += (InputAction.CallbackContext context) => OnPanHorizontal.Invoke(context.ReadValue<float>());
         panHorizontal.canceled += (InputAction.CallbackContext context) => OnPanHorizontalEnded.Invoke();
@@ -46,5 +53,27 @@ public class InputHandler : MonoBehaviour
 
         zoom.started += (InputAction.CallbackContext context) => OnZoom.Invoke(context.ReadValue<float>());
         zoom.canceled += (InputAction.CallbackContext context) => OnZoomEnded.Invoke();
+
+        leftClick.started += OnClick;
     }
+
+    private void OnClick(InputAction.CallbackContext context) {
+        bool isPointerOverUI = EventSystem.current.IsPointerOverGameObject();
+
+        if (!isPointerOverUI) {
+            Vector2 mousePos = Mouse.current.position.ReadValue();
+
+            Ray ray = Camera.main.ScreenPointToRay(mousePos);
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, interactableLayer)) {
+                Interactable interactable = hit.collider.GetComponent<Interactable>();
+
+                if (interactable != null) {
+                    interactable.OnInteract();
+                }
+            }
+        }
+    }
+
 }

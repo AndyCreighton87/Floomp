@@ -4,6 +4,7 @@ public static class StringLibrary
     public static readonly string PanHorizontal = "PanHorizontal";
     public static readonly string PanVertical = "PanVertical";
     public static readonly string Zoom = "Zoom";
+    public static readonly string LeftClick = "LeftClick";
     public static readonly string MouseX = "Mouse X";
     public static readonly string MouseY = "Mouse Y";
     public static readonly string MouseScrollWheel = "Mouse ScrollWheel";
