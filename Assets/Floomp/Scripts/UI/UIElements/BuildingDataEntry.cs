@@ -12,6 +12,8 @@ public class BuildingDataEntry : UIElement
 
     [SerializeField] private Button button;
 
+    public Button Button => button; 
+
     public void SetEntry(string _name, int _cost, Sprite _sprite, Action _callback) {
         nameText.text = _name;
         costText.text = _cost.ToString();
@@ -19,6 +21,11 @@ public class BuildingDataEntry : UIElement
         if (_sprite != null) {
             image.sprite = _sprite;
         }
-        button.onClick.AddListener(() => _callback.Invoke());
+
+        if (_callback != null) {
+            button.onClick.RemoveAllListeners();
+            button.onClick.AddListener(() => _callback.Invoke());
+        }
+
     }
 }

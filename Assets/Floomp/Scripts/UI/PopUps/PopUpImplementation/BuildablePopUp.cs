@@ -12,9 +12,15 @@ public class BuildablePopUp : WorldPopUp {
         foreach (BuildingData building in allBuildingData) {
             if (building != null) {
                 BuildingDataEntry entry = Instantiate(buildingDataEntryPrefab, entryTransform);
-                entry.SetEntry(building.name, building.buildCost, building.uiSprite, () => OnBuildingSelected(building));
+                entry.SetEntry(building.name, building.buildCost, building.uiSprite, null);
+                entry.Button.onClick.RemoveAllListeners();
+                entry.Button.onClick.AddListener(Test);
             }
         }
+    }
+
+    private void Test() {
+        Debug.Log("Test");
     }
 
     public void OnBuildingSelected(BuildingData _buildingData) {

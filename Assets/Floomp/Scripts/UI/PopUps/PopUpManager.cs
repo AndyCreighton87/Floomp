@@ -40,5 +40,12 @@ public class PopUpManager : MonoBehaviour
 
         currentPopUp = Instantiate(request.asset as PopUp, popUpTransform);
         currentPopUp.OnShow(_data);
+
+        // Have to ensure instanitated pop-ups are on the same layer as it's parent so that the input will work as intended
+        var layer = gameObject.layer;
+
+        foreach (Transform child in currentPopUp.transform) {
+            child.gameObject.layer = layer;
+        }
     }
 }

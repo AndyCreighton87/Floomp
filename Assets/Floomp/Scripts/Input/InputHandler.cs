@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
+using System.Collections.Generic;
 
 public class InputHandler : MonoBehaviour
 {
@@ -60,9 +61,7 @@ public class InputHandler : MonoBehaviour
     }
 
     private void OnClick(InputAction.CallbackContext context) {
-        bool isPointerOverUI = EventSystem.current.IsPointerOverGameObject();
-
-        if (!isPointerOverUI) {
+        if (!IsPointerOverUI()) {
             Vector2 mousePos = Mouse.current.position.ReadValue();
 
             Ray ray = Camera.main.ScreenPointToRay(mousePos);
@@ -76,6 +75,16 @@ public class InputHandler : MonoBehaviour
                     interactable.OnInteract();
                 }
             }
+        }
+
+        bool IsPointerOverUI() {
+            PointerEventData eventData = new PointerEventData(EventSystem.current) {
+                position = Mouse.current.position.ReadValue()
+            };
+
+            var results = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(eventData, results);
+            return results.Count > 0;
         }
     }
 
