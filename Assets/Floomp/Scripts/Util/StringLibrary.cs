@@ -29,4 +29,7 @@ public static class StringLibrary
     public static readonly string damageAnimation = "Damage";
     public static readonly string deathAnimation = "Death";
 
+    // Resource Paths
+    // Pop Ups
+    public static readonly string buildablePopUpPath = "PopUps/BuildablePopUp";
 }

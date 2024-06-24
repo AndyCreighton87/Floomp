@@ -26,7 +26,7 @@ public class BuildableAreaMarker : Interactable {
     }
 
     public override void OnInteract() {
-        Debug.Log("Buildable Area Marker Interacted");
+        PopUpManager.Instance.ShowPopUp("PopUps/BuildablePopUp");
     }
 }
 

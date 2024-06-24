@@ -28,6 +28,8 @@ public class InputHandler : MonoBehaviour
     [HideInInspector] public UnityEvent<float> OnZoom = new UnityEvent<float>();
     [HideInInspector] public UnityEvent OnZoomEnded = new UnityEvent();
 
+    public Vector3 mouseClickPosition { get; private set; }
+
     private void Awake() {
         if (Instance != null) {
             Destroy(gameObject);
@@ -64,6 +66,7 @@ public class InputHandler : MonoBehaviour
             Vector2 mousePos = Mouse.current.position.ReadValue();
 
             Ray ray = Camera.main.ScreenPointToRay(mousePos);
+            mouseClickPosition = ray.origin;
             RaycastHit hit;
 
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, interactableLayer)) {
