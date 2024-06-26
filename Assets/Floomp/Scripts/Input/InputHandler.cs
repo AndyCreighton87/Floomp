@@ -8,28 +8,23 @@ public class InputHandler : MonoBehaviour
 {
     public static InputHandler Instance;
 
-    [SerializeField] private InputActionAsset inputActionMap;
 
     [Header("Layer Masks")]
     [SerializeField] private LayerMask interactableLayer;
-
-    public InputAction panHorizontal { get; private set; }
-    public InputAction panVertical { get; private set; }
-    public InputAction zoom { get; private set; }
 
     public InputAction leftClick { get; private set; }
 
 
     [HideInInspector] public UnityEvent<float> OnPanHorizontal = new UnityEvent<float>();
-    [HideInInspector] public UnityEvent OnPanHorizontalEnded = new UnityEvent();
 
     [HideInInspector] public UnityEvent<float> OnPanVertical = new UnityEvent<float>();
-    [HideInInspector] public UnityEvent OnPanVerticalEnded = new UnityEvent();
 
     [HideInInspector] public UnityEvent<float> OnZoom = new UnityEvent<float>();
     [HideInInspector] public UnityEvent OnZoomEnded = new UnityEvent();
 
     public Vector3 mouseClickPosition { get; private set; }
+
+    private float lastZoom = 0;
 
     private void Awake() {
         if (Instance != null) {
@@ -42,22 +37,35 @@ public class InputHandler : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    private void Start() {
-        panHorizontal = inputActionMap.FindAction(StringLibrary.PanHorizontal);
-        panVertical = inputActionMap.FindAction(StringLibrary.PanVertical);
-        zoom = inputActionMap.FindAction(StringLibrary.Zoom);
-        leftClick = inputActionMap.FindAction(StringLibrary.LeftClick);
+    private void Update() {
+        HandlePan();
+        HandleZoom();
+    }
 
-        panHorizontal.started += (InputAction.CallbackContext context) => OnPanHorizontal.Invoke(context.ReadValue<float>());
-        panHorizontal.canceled += (InputAction.CallbackContext context) => OnPanHorizontalEnded.Invoke();
+    private void HandlePan() {
+        float panHorizontal = Input.GetAxis("Horizontal");
+        float panVertical = Input.GetAxis("Vertical");
 
-        panVertical.started += (InputAction.CallbackContext context) => OnPanVertical.Invoke(context.ReadValue<float>());
-        panVertical.canceled += (InputAction.CallbackContext context) => OnPanVerticalEnded.Invoke();
+        if (panHorizontal != 0) {
+            OnPanHorizontal.Invoke(panHorizontal);
+        }
 
-        zoom.started += (InputAction.CallbackContext context) => OnZoom.Invoke(context.ReadValue<float>());
-        zoom.canceled += (InputAction.CallbackContext context) => OnZoomEnded.Invoke();
+        if (panVertical != 0) {
+            OnPanVertical.Invoke(panVertical);
+        }
+    }
 
-        leftClick.started += OnClick;
+    private void HandleZoom() {
+        float zoom = Input.GetAxis("Mouse ScrollWheel");
+
+        if (lastZoom != 0 && zoom == 0) {
+            OnZoomEnded.Invoke();
+        }
+
+        if (zoom != 0) {
+            lastZoom = zoom;
+            OnZoom.Invoke(zoom);
+        }
     }
 
     private void OnClick(InputAction.CallbackContext context) {

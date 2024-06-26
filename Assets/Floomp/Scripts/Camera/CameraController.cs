@@ -27,11 +27,9 @@ public class CameraController : MonoBehaviour
 
         // Horizontal Input
         inputHandler.OnPanHorizontal.AddListener(PanHorizontal);
-        inputHandler.OnPanHorizontalEnded.AddListener(PanHorizontalEnded);
 
         //Vertical Input
         inputHandler.OnPanVertical.AddListener(PanVertical);
-        inputHandler.OnPanVerticalEnded.AddListener(PanVerticalEnded);
 
         //Zoom
         inputHandler.OnZoom.AddListener(Zoom);
