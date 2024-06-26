@@ -51,17 +51,8 @@ public class CameraController : MonoBehaviour
         panDirection.x = _value * panSpeed * Time.deltaTime;
     }
 
-    private void PanHorizontalEnded() {
-        panDirection.x = 0.0f;
-    }
-
-
     private void PanVertical(float _value) {
         panDirection.z = _value * panSpeed * Time.deltaTime;
-    }
-
-    private void PanVerticalEnded() {
-        panDirection.z = 0;
     }
 
     private void Zoom(float _value) {
