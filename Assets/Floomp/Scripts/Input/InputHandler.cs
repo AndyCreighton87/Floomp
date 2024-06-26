@@ -3,6 +3,7 @@ using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class InputHandler : MonoBehaviour
 {
@@ -11,6 +12,9 @@ public class InputHandler : MonoBehaviour
 
     [Header("Layer Masks")]
     [SerializeField] private LayerMask interactableLayer;
+
+
+    private GraphicRaycaster[] raycasters;
 
     public InputAction leftClick { get; private set; }
 
@@ -37,9 +41,14 @@ public class InputHandler : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    private void Start() {
+        raycasters = FindObjectsOfType<GraphicRaycaster>();
+    }
+
     private void Update() {
         HandlePan();
         HandleZoom();
+        HandleMouseClick();
     }
 
     private void HandlePan() {
@@ -68,12 +77,11 @@ public class InputHandler : MonoBehaviour
         }
     }
 
-    private void OnClick(InputAction.CallbackContext context) {
-        if (!IsPointerOverUI()) {
-            Vector2 mousePos = Mouse.current.position.ReadValue();
+    private void HandleMouseClick() {
+        mouseClickPosition = Input.mousePosition;
 
-            Ray ray = Camera.main.ScreenPointToRay(mousePos);
-            mouseClickPosition = ray.origin;
+        if (Input.GetMouseButtonDown(0) && !IsPointerOverUI()) {
+            Ray ray = Camera.main.ScreenPointToRay(mouseClickPosition);
             RaycastHit hit;
 
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, interactableLayer)) {
@@ -86,14 +94,19 @@ public class InputHandler : MonoBehaviour
         }
 
         bool IsPointerOverUI() {
-            PointerEventData eventData = new PointerEventData(EventSystem.current) {
-                position = Mouse.current.position.ReadValue()
-            };
+            PointerEventData eventData = new PointerEventData(EventSystem.current);
+            eventData.position = mouseClickPosition;
 
-            var results = new List<RaycastResult>();
-            EventSystem.current.RaycastAll(eventData, results);
-            return results.Count > 0;
+            foreach (var raycaster in raycasters) {
+                List<RaycastResult> results = new List<RaycastResult>();
+                raycaster.Raycast(eventData, results);
+
+                if (results.Count > 0) {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
-
 }

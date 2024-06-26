@@ -9,8 +9,7 @@ public class WorldPopUp : PopUp
             mainCamera = Camera.main;
         }
 
-        Vector3 worldPosition = InputHandler.Instance.mouseClickPosition;
-        Vector3 screenPosition = mainCamera.WorldToScreenPoint(worldPosition);
+        Vector3 screenPosition = InputHandler.Instance.mouseClickPosition;
 
         RectTransform rectTransform = GetComponent<RectTransform>();
 
